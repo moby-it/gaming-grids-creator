@@ -1,0 +1,6 @@
+services:
+  app:
+    restart: always
+    image: ghcr.io/moby-it/gaming-grids-creator
+    ports:
+      - 46001:3000
