@@ -1,3 +1,15 @@
+<script setup>
+useHead({
+    link: [
+        {
+            rel: "stylesheet",
+            href: "/styles.css",
+        },
+    ],
+});
+</script>
 <template>
-    <NuxtPage />
+    <main>
+        <NuxtPage />
+    </main>
 </template>

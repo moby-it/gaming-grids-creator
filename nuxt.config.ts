@@ -8,6 +8,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  runtimeConfig: {
+    jwtSecret: "",
+  },
   compatibilityDate: "2023-04-03",
   future: {
     compatibilityVersion: 4,
