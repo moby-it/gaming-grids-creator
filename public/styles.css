@@ -1,13 +1,18 @@
+@import url("/color.css");
+p {
+    margin: 0;
+}
 /* Root elements */
+
 html,
 body {
     height: 100%;
     margin: 0;
     font-family: Arial, sans-serif;
     font-size: 16px;
-    color: #333;
 }
 #__nuxt {
+    padding: 2rem 3rem;
     height: 100%;
 }
 /* Typography */
@@ -25,7 +30,6 @@ h2 {
 
 p {
     line-height: 1.5;
-    margin-bottom: 16px;
 }
 
 /* Buttons */
@@ -43,10 +47,7 @@ button:hover {
     background-color: #0069d9;
 }
 
-/* Input fields */
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+input {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -56,10 +57,4 @@ input[type="password"] {
 .error {
     font-size: 0.8rem;
     color: lightcoral;
-}
-/* Spacing */
-.container {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 20px;
 }

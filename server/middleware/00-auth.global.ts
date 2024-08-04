@@ -1,15 +1,23 @@
 import { verifyToken } from "../utils/utils";
+const publicAPIEndpoints = ["/api/refresh", "/api/login"];
 export default defineEventHandler(async (event) => {
-  if (event.path.includes("api") || event.path === "/login") return;
+  // protect api endpoints with auth
+  const accessToken = getCookie(event, "access-token");
+  const res = verifyToken(accessToken);
+  if (
+    publicAPIEndpoints.includes(event.path) ||
+    (event.path === "/login" && !res)
+  )
+    return;
   try {
-    const accessToken = getCookie(event, "access-token");
-    const res = verifyToken(accessToken);
-    if (!res) {
+    if (event.path === "/login" && res) return await sendRedirect(event, "/");
+    else {
       const refreshToken = getCookie(event, "refresh-token");
       const res = verifyToken(refreshToken);
       if (res) {
         const newAccessToken = createAccessToken(res.username);
         setCookie(event, "access-token", newAccessToken);
+        return;
       } else {
         throw new Error("failed to renew token");
       }
