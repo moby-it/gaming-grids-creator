@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
 export function createAccessToken(username: string): string {
   const { jwtSecret } = useRuntimeConfig();
-  // return jwt.sign({ username }, jwtSecret, { expiresIn: "4h" });
-  return jwt.sign({ username }, jwtSecret, { expiresIn: 1000 });
+  return jwt.sign({ username }, jwtSecret, { expiresIn: "4h" });
 }
 export function createRefreshToken(username: string): string {
   const { jwtSecret } = useRuntimeConfig();

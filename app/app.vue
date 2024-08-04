@@ -1,15 +1,6 @@
-<script setup>
-useHead({
-    link: [
-        {
-            rel: "stylesheet",
-            href: "/styles.css",
-        },
-    ],
-});
-</script>
+<script setup></script>
 <template>
-    <main>
+    <main class="max-w-screen-lg px-12 py-6 m-auto">
         <NuxtPage />
     </main>
 </template>

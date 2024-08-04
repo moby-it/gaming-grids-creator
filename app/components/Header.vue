@@ -1,3 +1,3 @@
 <template>
-    <h1>Gaming Grids Creator</h1>
+    <h1 class="text-2xl">Gaming Grids Creator</h1>
 </template>

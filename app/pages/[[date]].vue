@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const date = route.params["date"];
-if (!date) navigateTo(`${getCurrentMonth() + 1}-${getCurrentYear()}`);
+if (!date) await navigateTo(`${getCurrentMonth() + 1}-${getCurrentYear()}`);
 const monthIdx = Number((date as string).split("-")[0]) - 1;
 const year = Number((date as string).split("-")[1]);
 function incrementMonth() {
@@ -15,32 +15,18 @@ function decrementMonth() {
 </script>
 <template>
     <Header />
-    <section class="container">
-        <span class="icon" @click="decrementMonth">&larr;</span>
-        <span class="date">{{ formatDateAsMonthYear(monthIdx, year) }}</span>
-        <span class="icon" @click="incrementMonth">&rarr;</span>
+    <section class="text-2xl text-center my-6">
+        <span class="cursor-pointer text-4xl" @click="decrementMonth"
+            >&larr;</span
+        >
+        <span class="select-none">{{
+            formatDateAsMonthYear(monthIdx, year)
+        }}</span>
+        <span class="cursor-pointer text-4xl" @click="incrementMonth"
+            >&rarr;</span
+        >
     </section>
     <section>
         <Calendar :month="monthIdx" :year />
     </section>
 </template>
-<style scoped>
-.date {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-.container {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-}
-.icon {
-    user-select: none;
-    cursor: pointer;
-    font-size: 2.5rem;
-    &:hover {
-        color: gray;
-    }
-}
-</style>

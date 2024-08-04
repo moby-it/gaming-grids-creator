@@ -3,7 +3,6 @@ import { type Puzzle } from "#imports";
 const props = defineProps<{
     puzzle: Puzzle;
 }>();
-const name = defineModel("name");
 const form = reactive({
     name: props.puzzle.puzzle_name,
     colRestrictions: props.puzzle.col_restrictions,
@@ -54,7 +53,7 @@ function save() {
         <button @click="save">save</button>
     </form>
 </template>
-<style>
+<style scoped>
 .grid {
     margin-top: 2rem;
     width: fit-content;
@@ -70,12 +69,10 @@ function save() {
         "button button button button";
 }
 .cell {
-    border: 2px solid var(--primary-400);
     margin: -1px;
 }
 button {
     grid-area: button;
-    margin-top: 1rem;
     justify-self: center;
 }
 </style>

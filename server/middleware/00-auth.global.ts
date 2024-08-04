@@ -3,6 +3,7 @@ const publicAPIEndpoints = ["/api/refresh", "/api/login"];
 export default defineEventHandler(async (event) => {
   // protect api endpoints with auth
   const accessToken = getCookie(event, "access-token");
+
   const res = verifyToken(accessToken);
   if (
     publicAPIEndpoints.includes(event.path) ||
@@ -10,8 +11,9 @@ export default defineEventHandler(async (event) => {
   )
     return;
   try {
-    if (event.path === "/login" && res) return await sendRedirect(event, "/");
-    else {
+    if (event.path === "/login" && res) {
+      return await sendRedirect(event, "/");
+    } else {
       const refreshToken = getCookie(event, "refresh-token");
       const res = verifyToken(refreshToken);
       if (res) {

@@ -1,6 +1,6 @@
 import { compare, hash } from "bcrypt";
-import jwt from "jsonwebtoken";
 import { createAccessToken, createRefreshToken } from "../utils/utils";
+
 export default defineEventHandler(async (event) => {
   const storage = useStorage("db");
   const { username, password } = await readBody(event);

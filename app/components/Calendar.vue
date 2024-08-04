@@ -44,7 +44,7 @@ function getGridArea(day: number, month: number, year: number) {
 </script>
 <template>
     <section>
-        <section class="calendar">
+        <section class="grid gap-6 grid-cols-7 calendar">
             <DaysOfWeek />
             <CalendarDay
                 v-if="status === 'success'"
@@ -59,16 +59,8 @@ function getGridArea(day: number, month: number, year: number) {
     </section>
 </template>
 <style scoped>
-section {
-    margin: auto;
-    max-width: 1024px;
-}
 .calendar {
-    margin-top: 1rem;
-    display: grid;
-    gap: 1rem;
-    grid-template-rows: 0.2fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 50px repeat(5, 1fr);
     grid-template-areas:
         "mon tue wed thu fri sat sun"
         "mon1 tue1 wed1 thu1 fri1 sat1 sun1"
