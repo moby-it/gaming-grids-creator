@@ -7,6 +7,7 @@ if (!isValidDate(puzzleDate)) throw createError("invalid date on url params");
 const supabase = useSupabaseClient();
 const { data: puzzle, error } = await fetchPuzzle(supabase, puzzleDate);
 const restrictions = await fetchRestrictions(supabase);
+provide("restrictions", restrictions);
 const prevUrl = "../" + puzzleDate.split("-").slice(0, 2).reverse().join("-");
 </script>
 

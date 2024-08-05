@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{ backLink: string }>(), {
+const props = withDefaults(defineProps<{ backLink?: string }>(), {
     backLink: "",
 });
 </script>

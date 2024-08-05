@@ -1,58 +1,66 @@
 <script setup lang="ts">
-import { type Puzzle } from "#imports";
+import { Restriction as RestrictionT, type Puzzle } from "#imports";
+import { _0 } from "#tailwind-config/theme/zIndex";
 const props = defineProps<{
     puzzle: Puzzle;
 }>();
+
+const emits = defineEmits<{
+    save: [puzzle: Puzzle];
+}>();
+
 const form = reactive({
     name: props.puzzle.puzzle_name,
     colRestrictions: props.puzzle.col_restrictions,
     rowRestrictions: props.puzzle.row_restrictions,
 });
+const restrictions = inject<RestrictionT[]>("restrictions");
+if (!restrictions) throw createError("restrictios not found");
 
-const emits = defineEmits<{
-    save: [puzzle: Puzzle];
-}>();
+const results = computed(() => {
+    const results = new Array(9).fill(0);
+    form.rowRestrictions.forEach((rr, idx) => {
+        form.colRestrictions.forEach((cr, idy) => {
+            if (rr && cr)
+                results[idy + idx * 3] = calculateResults(restrictions, rr, cr);
+        });
+    });
+    return results;
+});
 function save() {
     console.log(toRaw(form));
 }
 </script>
 <template>
     <form
-        class="puzzle-grid grid grid-rows-[repeat(4,_120px)] grid-cols-[repeat(4,_120px)] gap-2 m-auto w-fit"
+        class="puzzle-grid grid grid-rows-4 grid-cols-4 gap-2 m-auto w-fit"
         @submit.prevent="() => $emit('save', puzzle)"
     >
         <input placeholder="Enter a name" v-model="form.name" />
-        <input
-            placeholder="Row Restriction 1"
-            style="grid-area: row-restriction-1"
-            v-model="form.rowRestrictions[0]"
-        />
-        <input
-            placeholder="Row Restriction 2"
-            style="grid-area: row-restriction-2"
-            v-model="form.rowRestrictions[1]"
-        />
-        <input
-            placeholder="Row Restriction 3"
-            style="grid-area: row-restriction-3"
-            v-model="form.rowRestrictions[2]"
-        />
-        <input
-            placeholder="Column Restriction 1"
-            style="grid-area: col-restriction-1"
-            v-model="form.colRestrictions[0]"
-        />
-        <input
-            placeholder="Column Restriction 2"
-            style="grid-area: col-restriction-2"
-            v-model="form.colRestrictions[1]"
-        />
-        <input
-            placeholder="Column Restriction 3"
-            style="grid-area: col-restriction-3"
-            v-model="form.colRestrictions[2]"
-        />
-        <section class="cell" v-for="index in 9"></section>
+        <section
+            v-for="index of 3"
+            class="h-100"
+            :style="{ 'grid-area': 'row-restriction-' + index }"
+        >
+            <Restriction v-model="form.rowRestrictions[index - 1]" />
+        </section>
+        <section
+            v-for="index of 3"
+            class="h-100"
+            :style="{ 'grid-area': 'col-restriction-' + index }"
+        >
+            <Restriction v-model="form.colRestrictions[index - 1]" />
+        </section>
+        <section class="text-center p-3 rounded m-auto" v-for="index in 9">
+            <UPopover mode="hover">
+                Answers: {{ results[index - 1]?.length || 0 }}
+                <template #panel>
+                    <section v-if="results[index - 1]" class="p-3">
+                        {{ results[index - 1].join(", ") }}
+                    </section>
+                </template>
+            </UPopover>
+        </section>
         <button
             class="bg-primary-800 hover:bg-primary-700 w-20 h-10 py-6 px-10 text-center flex justify-center items-center rounded-xl"
             @click="save"

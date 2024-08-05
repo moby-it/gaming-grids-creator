@@ -1,12 +1,15 @@
 <script setup lang="ts">
-const restrictionId = defineModel();
-const props = defineProps<{}>();
+import type { Restriction } from "#imports";
+const selected = defineModel<Restriction>();
+const restrictions = inject<Restriction[]>("restrictions");
 </script>
+
 <template>
-    <!-- <input
-        placeholder="Row Restriction 1"
-        style="grid-area: row-restriction-1"
-        type="text"
-        v-model="form.rowRestrictions[0]"
-    /> -->
+    <UInputMenu
+        v-model="selected"
+        :options="restrictions"
+        option-attribute="display_name"
+        value-attribute="id"
+        :search-attributes="['display_name', 'name']"
+    />
 </template>
