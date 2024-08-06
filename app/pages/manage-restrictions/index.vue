@@ -13,17 +13,32 @@ const columns = [{
 }];
 const page = ref(1);
 const pageCount = 5;
+const tableTerm = ref('');
+watch(tableTerm, () => {
+  page.value = 1;
+});
+const filteredResults = computed(() => filterRestrictions(tableTerm.value, restrictions.value));
 const rows = computed(() => {
-  return restrictions.value.slice((page.value - 1) * pageCount, (page.value) * pageCount);
-})
+  return filteredResults.value.slice((page.value - 1) * pageCount, (page.value) * pageCount);
+});
+
+
 
 </script>
 <template>
   <Header />
 
-  <NuxtLink to="/manage-restrictions/edit">
-    <UButton icon="i-iconoir-plus-circle">Add restriction </UButton>
-  </NuxtLink>
+  <section class="flex justify-between">
+    <NuxtLink to="/manage-restrictions/edit">
+      <UButton icon="i-iconoir-plus-circle">Add restriction </UButton>
+    </NuxtLink>
+    <UInput placeholder="Search..." v-model="tableTerm" :ui="{ icon: { trailing: { pointer: '' } } }">
+      <template #trailing>
+        <UButton v-show="tableTerm !== ''" color="gray" variant="link" :padded="false" class="cursor-pointer"
+          icon="i-iconoir-xmark" @click="tableTerm = ''" />
+      </template>
+    </UInput>
+  </section>
 
   <UTable class="mb-6" :columns :rows>
     <template #champion_list-data="{ row }">
@@ -37,5 +52,5 @@ const rows = computed(() => {
       </section>
     </template>
   </UTable>
-  <UPagination v-model="page" :page-count="pageCount" :total="restrictions.length" />
+  <UPagination v-model="page" :page-count="pageCount" :total="filteredResults.length" />
 </template>

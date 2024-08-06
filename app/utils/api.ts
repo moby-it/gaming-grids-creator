@@ -1,6 +1,6 @@
 import * as v from "valibot";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { Puzzle, Restriction } from "./types";
+import { Puzzle, Restriction, Champion } from "./types";
 import type { AsyncData } from "#app";
 
 export async function fetchRestrictions(
@@ -34,7 +34,20 @@ export async function fetchPuzzle(
     return output[0] || createInitialPuzzle(puzzleDate);
   });
 }
-
+export async function fetchChampions(supabase: SupabaseClient) {
+  return await useAsyncData(async () => {
+    const { data, error } = await supabase.from('champion').select('name, champion_id');
+    if (error) throw error;
+    return v.parse(v.array(Champion), data);
+  });
+};
 export async function upsertPuzzle(supabase: SupabaseClient, puzzle: Puzzle) {
-  const { data, error } = await supabase.from("puzzle").upsert(puzzle).select();
+  const { error } = await supabase.from("puzzle").upsert(puzzle).select();
+  if (error) throw createError(error);
+}
+export async function saveRestriction(supabase: SupabaseClient, restriction: Restriction) {
+  await $fetch("/api/restriction", {
+    method: "POST",
+    body: restriction,
+  });
 }

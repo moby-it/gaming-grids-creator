@@ -14,12 +14,12 @@ export function createInitialPuzzle(date: string): Puzzle {
 }
 
 export const Restriction = v.object({
-  id: v.string(),
+  id: v.optional(v.string()),
   name: v.string(),
   hash: v.string(),
   champion_list: v.array(v.string()),
   display_name: v.string(),
-  created_at: v.string(),
+  created_at: v.optional(v.string()),
 });
 
 export type Restriction = v.InferOutput<typeof Restriction>;

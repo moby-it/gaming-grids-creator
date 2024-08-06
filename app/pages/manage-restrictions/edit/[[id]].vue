@@ -1,5 +1,12 @@
-<script lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute();
+const supabase = useSupabaseClient();
+const { data: restrictions } = await fetchRestrictions(supabase);
+
+const selectedRestriction = route.params.id ? restrictions.value.find(r => r.id === route.params.id) : undefined;
+
+</script>
 <template>
   <Header back-link="/manage-restrictions" />
-  <h1>add/edit restriction</h1>
+  <EditRestriction :restriction="selectedRestriction" />
 </template>

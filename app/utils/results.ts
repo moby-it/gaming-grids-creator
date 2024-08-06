@@ -2,8 +2,8 @@ import type { Restriction } from "#imports";
 
 const countOccurrencies =
   <T>(arr: T[]) =>
-  (value: T): number =>
-    arr.reduce((acc, v) => (v === value ? acc + 1 : acc), 0);
+    (value: T): number =>
+      arr.reduce((acc, v) => (v === value ? acc + 1 : acc), 0);
 
 const filterByTwoOccurencies = <T>(arr: T[]) => filterByOccurencies(arr, 2);
 
@@ -23,4 +23,17 @@ export function calculateResults(
     colRestriction.champion_list,
   );
   return Array.from(new Set(filterByTwoOccurencies(arr)));
+}
+
+export function filterRestrictions(term: string, restrictions: Restriction[]): Restriction[] {
+  if (!term) return restrictions;
+  term = term.toLowerCase();
+  return restrictions.filter(r =>
+    r.name.toLowerCase().startsWith(term)
+    || r.display_name.toLowerCase().startsWith(term)
+    || r.champion_list.map(c => c.toLowerCase()).join(', ').includes(term)
+  );
+}
+export function transformDisplayName(name: string): string {
+  return name.toLowerCase().replace(' ', '_').replace('>=', '_gte_').replace('<=', '_lte_').replace('>', '_gt_').replace('<', '_lt_').replace('=', '_eq_');
 }

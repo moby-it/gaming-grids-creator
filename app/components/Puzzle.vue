@@ -55,7 +55,7 @@ async function save() {
             col_restrictions: output.colRestrictions,
             puzzle_name: output.name,
         };
-        const res = await $fetch("/api/puzzle", {
+        await $fetch("/api/puzzle", {
             method: "POST",
             body,
         });
@@ -66,7 +66,7 @@ async function save() {
 </script>
 <template>
     <form class="puzzle-grid grid gap-2 m-auto w-fit" @submit.prevent="() => $emit('save', puzzle)">
-        <UInput style="grid-area: title" placeholder="Enter a name" v-model="form.name" />
+        <UInput size="lg" style="grid-area: title" placeholder="Enter a name" v-model="form.name" />
         <section v-for="index of 3" :style="{ 'grid-area': 'row-restriction-' + index }">
             <Restriction v-model="form.rowRestrictions[index - 1]" />
         </section>

@@ -23,3 +23,16 @@ export const Restriction = v.object({
 });
 
 export type Restriction = v.InferOutput<typeof Restriction>;
+
+export const Champion = v.pipe(
+  v.object({
+      name: v.string(),
+      champion_id: v.string(),
+  }),
+  v.transform((c) => ({
+      name: c.name,
+      id: c.champion_id,
+  }))
+);
+
+export type Champion = v.InferOutput<typeof Champion>;

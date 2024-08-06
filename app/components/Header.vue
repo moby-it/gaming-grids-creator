@@ -8,7 +8,9 @@ withDefaults(defineProps<{ backLink?: string; }>(), {
 </script>
 <template>
     <section class="flex justify-between">
-        <h1 class="text-2xl mb-4">Gaming Grids Creator</h1>
+        <NuxtLink to="/">
+            <h1 class="text-2xl mb-4">Gaming Grids Creator</h1>
+        </NuxtLink>
         <section class="flex gap-2 mb-10">
             <NuxtLink class="text-primary-400 hover:bg-gray-800 p-2 rounded" active-class="active"
                 :class="{ 'active': 'date' in route.params }" to="/">Calendar
