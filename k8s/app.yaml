@@ -4,7 +4,7 @@ metadata:
   name: gaming-grids
 ---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: gaming-grids-admin
   namespace: gaming-grids
@@ -24,10 +24,10 @@ spec:
       containers:
         - image: ghcr.io/moby-it/gaming-grids-creator
           imagePullPolicy: Always
-          name: gaming-grids-app
+          name: gaming-grids-creator-app
           livenessProbe:
             httpGet:
-              path: /
+              path: /api/health
               port: 3000
             initialDelaySeconds: 15
             periodSeconds: 20

@@ -13,10 +13,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - admin-league.mobyplaygrounds.com
+        - league-admin.mobyplaygrounds.com
       secretName: admin-league-mobyplaygrounds-tls
   rules:
-    - host: admin-league.mobyplaygrounds.com
+    - host: league-admin.mobyplaygrounds.com
       http:
         paths:
           - path: /
