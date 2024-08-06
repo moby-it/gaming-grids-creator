@@ -20,4 +20,3 @@ const classes =
         <p class="text-xs" v-if="puzzleName">{{ puzzleName }}</p>
     </section>
 </template>
-<style scoped></style>

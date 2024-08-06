@@ -18,9 +18,7 @@ const { data: puzzles, status } = await useAsyncData(
 );
 function getPuzzleNameByDay(day: number): string | undefined {
     if (!puzzles.value?.length) return;
-    const date = new Date(year.value, month.value, day)
-        .toISOString()
-        .substring(0, 10);
+    const date = formatDate(day, month.value, year.value);
     return puzzles.value.find((p) => p.date === date)?.puzzle_name;
 }
 function getGridArea(day: number, month: number, year: number) {

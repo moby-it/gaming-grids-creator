@@ -24,25 +24,13 @@ async function login() {
 }
 </script>
 <template>
-    <form @submit.prevent="login">
-        <input type="text" v-model="username" />
-        <input type="password" v-model="password" />
+    <form
+        class="absolute top-1/2 left-1/2 flex flex-col gap-4 items-center -translate-x-1/2 -translate-y-1/2"
+        @submit.prevent="login"
+    >
+        <UInput class="w-30" type="text" v-model="username" />
+        <UInput class="w-30" type="password" v-model="password" />
         <span class="error" v-show="error">wrong credentials</span>
-        <button type="submit">login</button>
+        <UButton type="submit">login</UButton>
     </form>
 </template>
-<style scoped>
-form {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-    & input {
-        width: 300px;
-    }
-}
-</style>

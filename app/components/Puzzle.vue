@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { Restriction as RestrictionT, type Puzzle } from "#imports";
-import { _0 } from "#tailwind-config/theme/zIndex";
+import * as v from "valibot";
+
+const supabase = useSupabaseClient();
+const toast = useToast();
+
 const props = defineProps<{
     puzzle: Puzzle;
 }>();
@@ -8,12 +12,35 @@ const props = defineProps<{
 const emits = defineEmits<{
     save: [puzzle: Puzzle];
 }>();
+const formSchema = v.object({
+    name: v.pipe(v.string(), v.minLength(5)),
+    colRestrictions: v.pipe(v.array(v.string()), v.length(3)),
+    rowRestrictions: v.pipe(v.array(v.string()), v.length(3)),
+});
+const formSchemaT = v.pipe(
+    formSchema,
+    v.transform((f) => {
+        return {
+            id: props.puzzle.id,
+            puzzle_name: f.name,
+            date: props.puzzle.date,
+            row_restrictions: f.rowRestrictions,
+            col_restrictions: f.colRestrictions,
+        };
+    }),
+);
 
 const form = reactive({
     name: props.puzzle.puzzle_name,
     colRestrictions: props.puzzle.col_restrictions,
     rowRestrictions: props.puzzle.row_restrictions,
 });
+
+const submitDisabled = computed(() => {
+    const { success } = v.safeParse(formSchema, form);
+    return !success;
+});
+
 const restrictions = inject<RestrictionT[]>("restrictions");
 if (!restrictions) throw createError("restrictios not found");
 
@@ -27,26 +54,39 @@ const results = computed(() => {
     });
     return results;
 });
-function save() {
-    console.log(toRaw(form));
+async function save() {
+    const { output, success, issues } = v.safeParse(formSchemaT, form);
+    if (!success) {
+        throw createError("failed to validate form");
+    } else {
+        const { error } = await supabase
+            .from("puzzle")
+            .upsert(output as any) // cannot understand this type error
+            .select();
+        if (error) return console.error(error);
+        toast.add({ title: "Puzzle saved." });
+        navigateTo("../" + fromPuzzleDateToParamDate(props.puzzle.date));
+    }
 }
 </script>
 <template>
     <form
-        class="puzzle-grid grid grid-rows-4 grid-cols-4 gap-2 m-auto w-fit"
+        class="puzzle-grid grid gap-2 m-auto w-fit"
         @submit.prevent="() => $emit('save', puzzle)"
     >
-        <input placeholder="Enter a name" v-model="form.name" />
+        <UInput
+            style="grid-area: title"
+            placeholder="Enter a name"
+            v-model="form.name"
+        />
         <section
             v-for="index of 3"
-            class="h-100"
             :style="{ 'grid-area': 'row-restriction-' + index }"
         >
             <Restriction v-model="form.rowRestrictions[index - 1]" />
         </section>
         <section
             v-for="index of 3"
-            class="h-100"
             :style="{ 'grid-area': 'col-restriction-' + index }"
         >
             <Restriction v-model="form.colRestrictions[index - 1]" />
@@ -55,22 +95,26 @@ function save() {
             <UPopover mode="hover">
                 Answers: {{ results[index - 1]?.length || 0 }}
                 <template #panel>
-                    <section v-if="results[index - 1]" class="p-3">
+                    <section v-if="results[index - 1]?.length" class="p-3">
                         {{ results[index - 1].join(", ") }}
                     </section>
                 </template>
             </UPopover>
         </section>
-        <button
-            class="bg-primary-800 hover:bg-primary-700 w-20 h-10 py-6 px-10 text-center flex justify-center items-center rounded-xl"
-            @click="save"
-        >
-            save
-        </button>
     </form>
+    <UButton
+        :disabled="submitDisabled"
+        class="mt-8 self-center"
+        size="lg"
+        @click="save"
+    >
+        save
+    </UButton>
 </template>
 <style scoped>
 .puzzle-grid {
+    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-areas:
         "title col-restriction-1 col-restriction-2 col-restriction-3"
         "row-restriction-1 cell cell cell"

@@ -8,13 +8,13 @@ const supabase = useSupabaseClient();
 const { data: puzzle, error } = await fetchPuzzle(supabase, puzzleDate);
 const restrictions = await fetchRestrictions(supabase);
 provide("restrictions", restrictions);
-const prevUrl = "../" + puzzleDate.split("-").slice(0, 2).reverse().join("-");
+const prevUrl = "../" + fromPuzzleDateToParamDate(puzzleDate);
 </script>
 
 <template>
     <Header :back-link="prevUrl" />
     <span v-if="error">{{ error }}</span>
-    <section class="mt-3" v-else>
+    <section class="mt-3 flex flex-col" v-else>
         <header class="text-4xl text-center mb-8">{{ puzzleDate }}</header>
         <Puzzle :puzzle />
     </section>

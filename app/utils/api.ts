@@ -35,5 +35,4 @@ export async function fetchPuzzle(
 
 export async function upsertPuzzle(supabase: SupabaseClient, puzzle: Puzzle) {
   const { data, error } = await supabase.from("puzzle").upsert(puzzle).select();
-  console.log(data);
 }

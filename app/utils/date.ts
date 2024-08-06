@@ -52,3 +52,6 @@ export function isValidDate(dateString: unknown): dateString is string {
   if (!dNum && dNum !== 0) return false; // NaN value, Invalid date
   return d.toISOString().slice(0, 10) === dateString;
 }
+export function fromPuzzleDateToParamDate(date: string): string {
+  return date.split("-").slice(0, 2).reverse().join("-");
+}
