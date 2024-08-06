@@ -2,7 +2,6 @@
 import { Restriction as RestrictionT, type Puzzle } from "#imports";
 import * as v from "valibot";
 
-const supabase = useSupabaseClient();
 const toast = useToast();
 
 const props = defineProps<{
@@ -26,6 +25,7 @@ const FormSchema = v.object({
 });
 
 const submitDisabled = computed(() => {
+    if (results.value.some(v => v === 0)) return false;
     const { success } = v.safeParse(FormSchema, form);
     return !success;
 });
@@ -44,7 +44,7 @@ const results = computed(() => {
     return results;
 });
 async function save() {
-    const { output, success, issues } = v.safeParse(FormSchema, form);
+    const { output, success } = v.safeParse(FormSchema, form);
     if (!success) {
         throw createError("failed to validate form");
     } else {

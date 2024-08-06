@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const _props = defineProps<{ month: number; year: number }>();
+const _props = defineProps<{ month: number; year: number; }>();
 const month = toRef(_props, "month");
 const year = toRef(_props, "year");
 const daysOfMonth = computed(() => getDaysInMonth(year.value, month.value));
@@ -21,44 +21,20 @@ function getPuzzleNameByDay(day: number): string | undefined {
     const date = formatDate(day, month.value, year.value);
     return puzzles.value.find((p) => p.date === date)?.puzzle_name;
 }
-function getGridArea(day: number, month: number, year: number) {
-    // Calculate the day of the week (0-based, Sunday is 0)
-    const firstDayOfMonth = new Date(year, month, 1);
-    const dayOfWeek = firstDayOfMonth.getDay();
 
-    // Calculate the day of the month, adjusted for the starting day of the week
-    const adjustedDay = day + dayOfWeek - 1;
-
-    // Calculate the week of the month (1-based)
-    const weekOfMonth = Math.ceil(adjustedDay / 7);
-
-    // Construct the grid area
-    const dayOfWeekName = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][
-        adjustedDay % 7
-    ];
-    const gridArea = `${dayOfWeekName}${weekOfMonth}`;
-    return gridArea;
-}
 </script>
 <template>
     <section>
         <section class="grid gap-6 grid-cols-7 calendar">
             <DaysOfWeek />
-            <CalendarDay
-                v-if="status === 'success'"
-                :style="{ 'grid-area': getGridArea(day, month, year) }"
-                v-for="day in daysOfMonth"
-                :day
-                :month
-                :year
-                :puzzle-name="getPuzzleNameByDay(day)"
-            />
+            <CalendarDay v-if="status === 'success'" :style="{ 'grid-area': getGridArea(day, month, year) }"
+                v-for="day in daysOfMonth" :day :month :year :puzzle-name="getPuzzleNameByDay(day)" />
         </section>
     </section>
 </template>
 <style scoped>
 .calendar {
-    grid-template-rows: 50px repeat(5, 1fr);
+    grid-template-rows: 50px repeat(6, 1fr);
     grid-template-areas:
         "mon tue wed thu fri sat sun"
         "mon1 tue1 wed1 thu1 fri1 sat1 sun1"

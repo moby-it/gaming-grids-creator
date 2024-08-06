@@ -17,8 +17,11 @@ export function calculateResults(
 ): string[] {
   const rowRestriction = restrictions.find((r) => r.id === rowRestrictionId);
   const colRestriction = restrictions.find((r) => r.id === colRestrictionId);
-  if (!rowRestriction || !colRestriction)
-    throw createError("invalid restrictions");
+  if (!rowRestriction)
+    throw createError(`there is a problem with row restriction with id ${rowRestriction}. Restrictions is part of a puzzle and does not exist in the database.`);
+  if (!colRestriction)
+    throw createError(
+      `there is a problem with row restriction with id ${colRestriction}. Restrictions is part of a puzzle and does not exist in the database.`);
   const arr = rowRestriction?.champion_list.concat(
     colRestriction.champion_list,
   );

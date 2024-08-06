@@ -45,9 +45,3 @@ export async function upsertPuzzle(supabase: SupabaseClient, puzzle: Puzzle) {
   const { error } = await supabase.from("puzzle").upsert(puzzle).select();
   if (error) throw createError(error);
 }
-export async function saveRestriction(supabase: SupabaseClient, restriction: Restriction) {
-  await $fetch("/api/restriction", {
-    method: "POST",
-    body: restriction,
-  });
-}

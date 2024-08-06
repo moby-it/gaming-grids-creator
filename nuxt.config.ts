@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ["@nuxt/image", "@nuxtjs/supabase", "@nuxt/ui"],
+  modules: ["@nuxt/image", "@nuxtjs/supabase", "@nuxt/ui", "@nuxt/test-utils/module"],
   nitro: {
     storage: {
       db: {

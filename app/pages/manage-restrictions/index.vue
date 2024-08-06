@@ -14,9 +14,11 @@ const columns = [{
 const page = ref(1);
 const pageCount = 5;
 const tableTerm = ref('');
+
 watch(tableTerm, () => {
   page.value = 1;
 });
+
 const filteredResults = computed(() => filterRestrictions(tableTerm.value, restrictions.value));
 const rows = computed(() => {
   return filteredResults.value.slice((page.value - 1) * pageCount, (page.value) * pageCount);

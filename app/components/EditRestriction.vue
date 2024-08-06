@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import type { Champion, Restriction } from '#imports';
+import type { Restriction } from '#imports';
+import { v4 as uuid } from 'uuid';
 const props = defineProps<{
   restriction?: Restriction;
 }>();
 const supabase = useSupabaseClient();
 const toast = useToast();
+
 const { data: champions } = await fetchChampions(supabase);
 const name = ref(props.restriction?.name ?? '');
 const selectedChampion = ref<string>();
 const query = ref('');
+
 const options = computed(() => {
   if (query.value.length === 0) return [];
   return champions.value?.filter(c => c.name.toLowerCase().startsWith(query.value.toLowerCase()));
 });
+
 const _selectedChampions = ref(new Set<string>(props.restriction?.champion_list));
 const selectedChampions = computed(() => Array.from(_selectedChampions.value).sort());
 
@@ -33,7 +37,7 @@ async function saveRestriction() {
   const restriction: Partial<Restriction> = {
     name: transformDisplayName(name.value),
     display_name: name.value,
-    hash: '',
+    hash: uuid(),
     champion_list: selectedChampions.value.map(sc => champions.value?.find(c => c.name === sc)).map(c => c?.id) as string[]
   };
   if (props.restriction) restriction.id = props.restriction.id;
