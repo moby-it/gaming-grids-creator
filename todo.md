@@ -1,3 +1,3 @@
 # TODO
 
-- add create restriction feature
+- create restriction edit/add functionalities

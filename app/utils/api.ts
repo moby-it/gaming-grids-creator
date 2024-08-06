@@ -5,19 +5,21 @@ import type { AsyncData } from "#app";
 
 export async function fetchRestrictions(
   supabase: SupabaseClient,
-): Promise<Restriction[]> {
-  const { data, error } = await supabase.from("restriction").select();
-  if (error) return [];
-  const { output, success, issues } = v.safeParse(v.array(Restriction), data);
-  if (issues) console.error(issues);
-  if (!success) throw createError("failed to validate restrictions");
-  return output;
+): Promise<AsyncData<Restriction[], unknown>> {
+  return useAsyncData(async () => {
+    const { data, error } = await supabase.from("restriction").select();
+    if (error) return [];
+    const { output, success, issues } = v.safeParse(v.array(Restriction), data);
+    if (issues) console.error(issues);
+    if (!success) return issues;
+    return output;
+  });
 }
 
 export async function fetchPuzzle(
   supabase: SupabaseClient,
   puzzleDate: string,
-): Promise<AsyncData<Puzzle, Error | undefined>> {
+): Promise<AsyncData<Puzzle, unknown>> {
   return await useAsyncData(puzzleDate, async () => {
     const { data, error } = await supabase
       .from("puzzle")

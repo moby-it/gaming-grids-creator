@@ -30,7 +30,7 @@ const submitDisabled = computed(() => {
     return !success;
 });
 
-const restrictions = inject<RestrictionT[]>("restrictions");
+const restrictions = inject<Ref<RestrictionT[]>>("restrictions");
 if (!restrictions) throw createError("restrictios not found");
 
 const results = computed(() => {
@@ -38,7 +38,7 @@ const results = computed(() => {
     form.rowRestrictions.forEach((rr, idx) => {
         form.colRestrictions.forEach((cr, idy) => {
             if (rr && cr)
-                results[idy + idx * 3] = calculateResults(restrictions, rr, cr);
+                results[idy + idx * 3] = calculateResults(restrictions.value, rr, cr);
         });
     });
     return results;
@@ -65,25 +65,12 @@ async function save() {
 }
 </script>
 <template>
-    <form
-        class="puzzle-grid grid gap-2 m-auto w-fit"
-        @submit.prevent="() => $emit('save', puzzle)"
-    >
-        <UInput
-            style="grid-area: title"
-            placeholder="Enter a name"
-            v-model="form.name"
-        />
-        <section
-            v-for="index of 3"
-            :style="{ 'grid-area': 'row-restriction-' + index }"
-        >
+    <form class="puzzle-grid grid gap-2 m-auto w-fit" @submit.prevent="() => $emit('save', puzzle)">
+        <UInput style="grid-area: title" placeholder="Enter a name" v-model="form.name" />
+        <section v-for="index of 3" :style="{ 'grid-area': 'row-restriction-' + index }">
             <Restriction v-model="form.rowRestrictions[index - 1]" />
         </section>
-        <section
-            v-for="index of 3"
-            :style="{ 'grid-area': 'col-restriction-' + index }"
-        >
+        <section v-for="index of 3" :style="{ 'grid-area': 'col-restriction-' + index }">
             <Restriction v-model="form.colRestrictions[index - 1]" />
         </section>
         <section class="text-center p-3 rounded m-auto" v-for="index in 9">
@@ -97,12 +84,7 @@ async function save() {
             </UPopover>
         </section>
     </form>
-    <UButton
-        :disabled="submitDisabled"
-        class="mt-8 self-center"
-        size="lg"
-        @click="save"
-    >
+    <UButton :disabled="submitDisabled" class="mt-8 self-center" size="lg" @click="save">
         save
     </UButton>
 </template>
@@ -117,10 +99,12 @@ async function save() {
         "row-restriction-3 cell cell cell"
         "button button button button";
 }
+
 button {
     grid-area: button;
     justify-self: center;
 }
+
 input {
     border: 1px solid theme("colors.gray.500");
     border-radius: theme("borderRadius.lg");
