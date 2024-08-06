@@ -12,23 +12,6 @@ const props = defineProps<{
 const emits = defineEmits<{
     save: [puzzle: Puzzle];
 }>();
-const formSchema = v.object({
-    name: v.pipe(v.string(), v.minLength(5)),
-    colRestrictions: v.pipe(v.array(v.string()), v.length(3)),
-    rowRestrictions: v.pipe(v.array(v.string()), v.length(3)),
-});
-const formSchemaT = v.pipe(
-    formSchema,
-    v.transform((f) => {
-        return {
-            id: props.puzzle.id,
-            puzzle_name: f.name,
-            date: props.puzzle.date,
-            row_restrictions: f.rowRestrictions,
-            col_restrictions: f.colRestrictions,
-        };
-    }),
-);
 
 const form = reactive({
     name: props.puzzle.puzzle_name,
@@ -36,8 +19,14 @@ const form = reactive({
     rowRestrictions: props.puzzle.row_restrictions,
 });
 
+const FormSchema = v.object({
+    name: v.pipe(v.string(), v.minLength(5)),
+    colRestrictions: v.pipe(v.array(v.string()), v.length(3)),
+    rowRestrictions: v.pipe(v.array(v.string()), v.length(3)),
+});
+
 const submitDisabled = computed(() => {
-    const { success } = v.safeParse(formSchema, form);
+    const { success } = v.safeParse(FormSchema, form);
     return !success;
 });
 
@@ -55,15 +44,21 @@ const results = computed(() => {
     return results;
 });
 async function save() {
-    const { output, success, issues } = v.safeParse(formSchemaT, form);
+    const { output, success, issues } = v.safeParse(FormSchema, form);
     if (!success) {
         throw createError("failed to validate form");
     } else {
-        const { error } = await supabase
-            .from("puzzle")
-            .upsert(output as any) // cannot understand this type error
-            .select();
-        if (error) return console.error(error);
+        const body: Puzzle = {
+            id: props.puzzle.id,
+            date: props.puzzle.date,
+            row_restrictions: output.rowRestrictions,
+            col_restrictions: output.colRestrictions,
+            puzzle_name: output.name,
+        };
+        const res = await $fetch("/api/puzzle", {
+            method: "POST",
+            body,
+        });
         toast.add({ title: "Puzzle saved." });
         navigateTo("../" + fromPuzzleDateToParamDate(props.puzzle.date));
     }

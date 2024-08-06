@@ -20,6 +20,9 @@ spec:
         - image: ghcr.io/moby-it/gaming-grids-creator
           imagePullPolicy: Always
           name: gaming-grids-creator-app
+          envFrom:
+            - secretRef:
+                name: gaming-grids-creator-env
           livenessProbe:
             httpGet:
               path: /api/health
