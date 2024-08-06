@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    allowedUsers: "",
     jwtSecret: "",
     supabase: {
       serviceKey: "",
