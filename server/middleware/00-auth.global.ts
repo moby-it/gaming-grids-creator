@@ -1,6 +1,7 @@
 import { verifyToken } from "../utils/utils";
 const publicAPIEndpoints = ["/api/refresh", "/api/login", "/api/health"];
 export default defineEventHandler(async (event) => {
+  console.log(event.path);
   // protect api endpoints with auth
   const accessToken = getCookie(event, "access-token");
 
