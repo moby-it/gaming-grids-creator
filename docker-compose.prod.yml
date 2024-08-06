@@ -1,6 +1,7 @@
 services:
   app:
     restart: always
+    env_file: .env
     image: ghcr.io/moby-it/gaming-grids-creator
     ports:
       - 46001:3000
