@@ -1,4 +1,3 @@
 # TODO
 
-- create restriction component
-- implement submission login
+- add create restriction feature
