@@ -23,14 +23,12 @@ const selectedChampions = computed(() => Array.from(_selectedChampions.value).so
 watchEffect(() => {
   if (selectedChampion.value) {
     _selectedChampions.value.add(selectedChampion.value);
-    console.log(_selectedChampions.value);
   }
 });
 
 function deleteChampion(championName: string) {
   _selectedChampions.value.delete(championName);
   selectedChampion.value = undefined;
-  console.log(_selectedChampions.value);
 }
 
 async function saveRestriction() {
@@ -38,7 +36,7 @@ async function saveRestriction() {
     name: transformDisplayName(name.value),
     display_name: name.value,
     hash: uuid(),
-    champion_list: selectedChampions.value.map(sc => champions.value?.find(c => c.name === sc)).map(c => c?.id) as string[]
+    champion_list: selectedChampions.value
   };
   if (props.restriction) restriction.id = props.restriction.id;
   const res = await $fetch("/api/restriction", {

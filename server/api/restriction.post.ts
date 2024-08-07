@@ -5,7 +5,7 @@ export default defineEventHandler(async event => {
   const body = await readBody(event);
   const { output: restriction, success, issues } = v.safeParse(Restriction, body);
   if (!success) {
-    console.error(issues);
+    console.error(issues.map(i => i.message).join(', '));
     setResponseStatus(event, 400, 'failed to parse restriction');
     return;
   }
