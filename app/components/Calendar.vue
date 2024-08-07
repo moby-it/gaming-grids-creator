@@ -8,7 +8,7 @@ const { data: puzzles, status } = await useAsyncData(
     async () => {
         const { data: puzzles } = await supabase
             .from("puzzle")
-            .select("puzzle_name, date")
+            .select("name, date")
             .gte("date", getFirstDayOfMonth(month.value, year.value))
             .lte("date", getLastDayOfMonth(month.value, year.value));
 
@@ -19,7 +19,7 @@ const { data: puzzles, status } = await useAsyncData(
 function getPuzzleNameByDay(day: number): string | undefined {
     if (!puzzles.value?.length) return;
     const date = formatDate(day, month.value, year.value);
-    return puzzles.value.find((p) => p.date === date)?.puzzle_name;
+    return puzzles.value.find((p) => p.date === date)?.name;
 }
 
 </script>

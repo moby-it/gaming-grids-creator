@@ -33,8 +33,7 @@ function deleteChampion(championName: string) {
 
 async function saveRestriction() {
   const restriction: Partial<Restriction> = {
-    name: transformDisplayName(name.value),
-    display_name: name.value,
+    name: name.value,
     hash: uuid(),
     champion_list: selectedChampions.value
   };
@@ -43,7 +42,6 @@ async function saveRestriction() {
     method: "POST",
     body: restriction,
   });
-  console.log(res);
   toast.add({ title: 'Restriction saved.' });
   navigateTo('/manage-restrictions');
 }
@@ -55,7 +53,7 @@ async function saveRestriction() {
     <h2 class="text-xl text-center">{{ restriction ? restriction.name : 'Create new restriction' }}</h2>
     <UInput placeholder="Name... " size="lg" v-model="name" />
     <UInputMenu size="lg" v-model:query="query" v-model="selectedChampion" placeholder="Start typing to add a champion"
-      searchable :options value-attribute="id" option-attribute="name" :popper="{}" />
+      searchable :options value-attribute="id" option-attribute="name" />
     <UButton :disabled="!selectedChampions.length" class="self-center" @click="saveRestriction">save</UButton>
 
     <UDivider />

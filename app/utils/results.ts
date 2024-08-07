@@ -10,6 +10,7 @@ const filterByTwoOccurencies = <T>(arr: T[]) => filterByOccurencies(arr, 2);
 const filterByOccurencies = <T>(arr: T[], occurencies: number): T[] =>
   arr.filter((v) => countOccurrencies(arr)(v) >= occurencies);
 
+
 export function calculateResults(
   restrictions: Restriction[],
   rowRestrictionId: string,
@@ -22,9 +23,12 @@ export function calculateResults(
   if (!colRestriction)
     throw createError(
       `there is a problem with row restriction with id ${colRestriction}. Restrictions is part of a puzzle and does not exist in the database.`);
-  const arr = rowRestriction?.champion_list.concat(
-    colRestriction.champion_list,
-  );
+      
+  return getRestrictionPossibleAnswers(rowRestriction, colRestriction);
+}
+
+export function getRestrictionPossibleAnswers(a: Restriction, b: Restriction): string[] {
+  const arr = a?.champion_list.concat(b.champion_list);
   return Array.from(new Set(filterByTwoOccurencies(arr)));
 }
 
@@ -33,10 +37,7 @@ export function filterRestrictions(term: string, restrictions: Restriction[]): R
   term = term.toLowerCase();
   return restrictions.filter(r =>
     r.name.toLowerCase().startsWith(term)
-    || r.display_name.toLowerCase().startsWith(term)
+    || r.name.toLowerCase().startsWith(term)
     || r.champion_list.map(c => c.toLowerCase()).join(', ').includes(term)
   );
-}
-export function transformDisplayName(name: string): string {
-  return name.toLowerCase().replace(' ', '_').replace('>=', '_gte_').replace('<=', '_lte_').replace('>', '_gt_').replace('<', '_lt_').replace('=', '_eq_');
 }

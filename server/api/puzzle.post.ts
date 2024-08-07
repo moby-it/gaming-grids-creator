@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     console.error(issues.toString());
     return "failed to validate puzzle schema";
   }
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("puzzle")
     .upsert(output as any)
     .select();

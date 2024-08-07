@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { Restriction as RestrictionT, type Puzzle } from "#imports";
 import * as v from "valibot";
-
-const toast = useToast();
+import { calculateResults } from "~/utils/results";
 
 const props = defineProps<{
     puzzle: Puzzle;
@@ -12,33 +11,40 @@ const emits = defineEmits<{
     save: [puzzle: Puzzle];
 }>();
 
+const toast = useToast();
+const restrictions = inject<Ref<RestrictionT[]>>("restrictions");
+if (!restrictions) throw createError("restrictios not found");
+
 const form = reactive({
-    name: props.puzzle.puzzle_name,
-    colRestrictions: props.puzzle.col_restrictions,
-    rowRestrictions: props.puzzle.row_restrictions,
+    name: props.puzzle.name,
+    colRestrictions: props.puzzle.col_restrictions.map(cr => cr.id),
+    rowRestrictions: props.puzzle.row_restrictions.map(cr => cr.id),
 });
 
-const FormSchema = v.object({
+const FormSchema = v.pipe(v.object({
     name: v.pipe(v.string(), v.minLength(5)),
     colRestrictions: v.pipe(v.array(v.string()), v.length(3)),
     rowRestrictions: v.pipe(v.array(v.string()), v.length(3)),
-});
+}), v.transform((v) => ({
+    name: v.name,
+    col_restrictions: v.colRestrictions.map(cr => restrictions.value.find(r => r.id === cr)) as RestrictionT[],
+    row_restrictions: v.rowRestrictions.map(cr => restrictions.value.find(r => r.id === cr)) as RestrictionT[],
+})));
 
 const submitDisabled = computed(() => {
-    if (results.value.some(v => v === 0)) return false;
+    if (results.value.some(v => v === 0)) return true;
     const { success } = v.safeParse(FormSchema, form);
     return !success;
 });
 
-const restrictions = inject<Ref<RestrictionT[]>>("restrictions");
-if (!restrictions) throw createError("restrictios not found");
+
 
 const results = computed(() => {
     const results = new Array(9).fill(0);
     form.rowRestrictions.forEach((rr, idx) => {
         form.colRestrictions.forEach((cr, idy) => {
             if (rr && cr)
-                results[idy + idx * 3] = calculateResults(restrictions.value, rr, cr);
+                results[idy + idx * 3] = calculateResults(restrictions.value, cr, rr);
         });
     });
     return results;
@@ -51,10 +57,11 @@ async function save() {
         const body: Puzzle = {
             id: props.puzzle.id,
             date: props.puzzle.date,
-            row_restrictions: output.rowRestrictions,
-            col_restrictions: output.colRestrictions,
-            puzzle_name: output.name,
+            row_restrictions: output.row_restrictions,
+            col_restrictions: output.col_restrictions,
+            name: output.name,
         };
+        console.log(body);
         await $fetch("/api/puzzle", {
             method: "POST",
             body,

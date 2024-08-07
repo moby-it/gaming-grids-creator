@@ -4,7 +4,7 @@ const supabase = useSupabaseClient();
 const { data: restrictions } = await fetchRestrictions(supabase);
 provide('restrictions', restrictions);
 const columns = [{
-  key: 'display_name',
+  key: 'name',
   label: 'Name',
   sortable: true
 },

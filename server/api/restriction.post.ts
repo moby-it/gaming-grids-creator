@@ -9,7 +9,7 @@ export default defineEventHandler(async event => {
     setResponseStatus(event, 400, 'failed to parse restriction');
     return;
   }
-  const { data, error } = await supabase.from('restriction').upsert(restriction as any).select();
+  const { error } = await supabase.from('restriction').upsert(restriction as any).select();
 
   if (error) {
     console.error(error);
