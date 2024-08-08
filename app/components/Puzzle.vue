@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Restriction as RestrictionT, type Puzzle } from "#imports";
 import * as v from "valibot";
-import { calculateResults } from "~/utils/results";
+
 
 const props = defineProps<{
     puzzle: Puzzle;
@@ -17,21 +17,23 @@ if (!restrictions) throw createError("restrictios not found");
 
 const form = reactive({
     name: props.puzzle.name,
-    colRestrictions: props.puzzle.col_restrictions.map(cr => cr.id),
-    rowRestrictions: props.puzzle.row_restrictions.map(cr => cr.id),
+    colRestrictions: props.puzzle.col_restrictions,
+    rowRestrictions: props.puzzle.row_restrictions
 });
 
-const FormSchema = v.pipe(v.object({
-    name: v.pipe(v.string(), v.minLength(5)),
-    colRestrictions: v.pipe(v.array(v.string()), v.length(3)),
-    rowRestrictions: v.pipe(v.array(v.string()), v.length(3)),
-}), v.transform((v) => ({
-    name: v.name,
-    col_restrictions: v.colRestrictions.map(cr => restrictions.value.find(r => r.id === cr)) as RestrictionT[],
-    row_restrictions: v.rowRestrictions.map(cr => restrictions.value.find(r => r.id === cr)) as RestrictionT[],
-})));
+const FormSchema = v.object({
+    name: v.pipe(v.string(), v.minLength(3)),
+    colRestrictions: v.array(RestrictionT),
+    rowRestrictions: v.array(RestrictionT),
+});
+
+const isOld = computed(() => {
+    return false;
+    // return new Date(props.puzzle.date).getTime() < new Date().getTime();
+});
 
 const submitDisabled = computed(() => {
+    if (isOld.value) return true;
     if (results.value.some(v => v === 0)) return true;
     const { success } = v.safeParse(FormSchema, form);
     return !success;
@@ -44,7 +46,7 @@ const results = computed(() => {
     form.rowRestrictions.forEach((rr, idx) => {
         form.colRestrictions.forEach((cr, idy) => {
             if (rr && cr)
-                results[idy + idx * 3] = calculateResults(restrictions.value, cr, rr);
+                results[idy + idx * 3] = getRestrictionPossibleAnswers(rr, cr);
         });
     });
     return results;
@@ -57,8 +59,8 @@ async function save() {
         const body: Puzzle = {
             id: props.puzzle.id,
             date: props.puzzle.date,
-            row_restrictions: output.row_restrictions,
-            col_restrictions: output.col_restrictions,
+            row_restrictions: output.colRestrictions,
+            col_restrictions: output.rowRestrictions,
             name: output.name,
         };
         console.log(body);
@@ -72,13 +74,14 @@ async function save() {
 }
 </script>
 <template>
+    <h2 v-if="isOld" class="text-orange-400 text-center m-6">cannot edit an older puzzle</h2>
     <form class="puzzle-grid grid gap-2 m-auto w-fit" @submit.prevent="() => $emit('save', puzzle)">
-        <UInput size="lg" style="grid-area: title" placeholder="Enter a name" v-model="form.name" />
+        <UInput :disabled="isOld" size="lg" style="grid-area: title" placeholder="Enter a name" v-model="form.name" />
         <section v-for="index of 3" :style="{ 'grid-area': 'row-restriction-' + index }">
-            <Restriction v-model="form.rowRestrictions[index - 1]" />
+            <Restriction :disabled="isOld" v-model="form.rowRestrictions[index - 1]" />
         </section>
         <section v-for="index of 3" :style="{ 'grid-area': 'col-restriction-' + index }">
-            <Restriction v-model="form.colRestrictions[index - 1]" />
+            <Restriction :disabled="isOld" v-model="form.colRestrictions[index - 1]" />
         </section>
         <section class="text-center p-3 rounded m-auto" v-for="index in 9">
             <UPopover mode="hover">
