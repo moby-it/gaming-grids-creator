@@ -5,6 +5,6 @@ const restrictions = inject<Ref<Restriction[]>>("restrictions");
 </script>
 
 <template>
-    <USelectMenu size="lg" :searchable="true" v-model="selected" :options="restrictions" option-attribute="name" value-attribute="id"
-        :search-attributes="['name', 'name']" />
+    <USelectMenu size="lg" :searchable="true" v-model="selected" :options="restrictions" option-attribute="name"
+        value-attribute="id" :search-attributes="['name']" />
 </template>

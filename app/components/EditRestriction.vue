@@ -14,7 +14,7 @@ const query = ref('');
 
 const options = computed(() => {
   if (query.value.length === 0) return [];
-  return champions.value?.filter(c => c.name.toLowerCase().startsWith(query.value.toLowerCase()));
+  return champions.value?.map(c => c.name).filter(n => n.toLowerCase().startsWith(query.value.toLowerCase()));
 });
 
 const _selectedChampions = ref(new Set<string>(props.restriction?.champion_list));
@@ -23,6 +23,7 @@ const selectedChampions = computed(() => Array.from(_selectedChampions.value).so
 watchEffect(() => {
   if (selectedChampion.value) {
     _selectedChampions.value.add(selectedChampion.value);
+    selectedChampion.value = undefined;
   }
 });
 
@@ -53,7 +54,7 @@ async function saveRestriction() {
     <h2 class="text-xl text-center">{{ restriction ? restriction.name : 'Create new restriction' }}</h2>
     <UInput placeholder="Name... " size="lg" v-model="name" />
     <UInputMenu size="lg" v-model:query="query" v-model="selectedChampion" placeholder="Start typing to add a champion"
-      searchable :options value-attribute="id" option-attribute="name" />
+      searchable :options />
     <UButton :disabled="!selectedChampions.length" class="self-center" @click="saveRestriction">save</UButton>
 
     <UDivider />
