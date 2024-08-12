@@ -5,6 +5,7 @@ export default defineEventHandler(async (event) => {
   const accessToken = getCookie(event, "access-token");
 
   const res = verifyToken(accessToken);
+  if (res) return;
   if (
     publicAPIEndpoints.includes(event.path) ||
     (event.path === "/login" && !res)
@@ -17,6 +18,7 @@ export default defineEventHandler(async (event) => {
       const refreshToken = getCookie(event, "refresh-token");
       const res = verifyToken(refreshToken);
       if (res) {
+        console.log('token refreshed');
         const newAccessToken = createAccessToken(res.username);
         setCookie(event, "access-token", newAccessToken);
         return;

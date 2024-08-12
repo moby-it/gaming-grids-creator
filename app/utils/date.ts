@@ -55,15 +55,17 @@ export function isValidDate(dateString: unknown): dateString is string {
 export function fromPuzzleDateToParamDate(date: string): string {
   return date.split("-").slice(0, 2).reverse().join("-");
 }
+
+function getWeekOfMonth(day: number, month: number, year: number): number {
+  const firstDay = new Date(year, month, 1).getDay() === 0 ? 7 : new Date(year, month, 1).getDay();
+  const weekOfMonth = Math.ceil((firstDay + day - 1) / 7);
+  return weekOfMonth;
+}
+
 export function getGridArea(day: number, month: number, year: number) {
   const date = new Date(year, month, day);
   const dayOfWeek = date.getDay();
-
-  const firstDay = new Date(year, month, 1).getDay() === 0 ? 7 : new Date(year, month, 1).getDay();
-
-
-  const weekOfMonth = Math.ceil((firstDay + day - 1) / 7);
-  // Construct the grid area
+  const weekOfMonth = getWeekOfMonth(day, month, year);
   const dayOfWeekName = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][
     dayOfWeek
   ];

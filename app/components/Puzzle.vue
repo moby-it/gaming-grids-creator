@@ -59,11 +59,11 @@ async function save() {
         const body: Puzzle = {
             id: props.puzzle.id,
             date: props.puzzle.date,
-            row_restrictions: output.colRestrictions,
-            col_restrictions: output.rowRestrictions,
+            row_restrictions: output.rowRestrictions,
+            col_restrictions: output.colRestrictions,
             name: output.name,
         };
-        console.log(body);
+        (body);
         await $fetch("/api/puzzle", {
             method: "POST",
             body,

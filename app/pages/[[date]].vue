@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-    middleware: ['01-calendar-month']
+    middleware: ['00-calendar-month']
 });
 const route = useRoute();
 const date = route.params["date"];
