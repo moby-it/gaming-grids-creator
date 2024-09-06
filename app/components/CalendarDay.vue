@@ -9,7 +9,7 @@ function navigateToPuzzle() {
     navigateTo(`/puzzle/` + formatDate(props.day, props.month, props.year));
 }
 const classes =
-    "cursor-pointer pt-2 pb-6 w-24 h-20 text-center text-2xl border-2 rounded-lg justify-self-center hover:bg-primary-600 ease-in duration-300";
+    "cursor-pointer pt-2 pb-6 w-24 h-20 text-center text-2xl border-2 rounded-lg justify-self-center hover:bg-primary-600 ease-out duration-200";
 </script>
 <template>
     <section

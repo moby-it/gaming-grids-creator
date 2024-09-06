@@ -17,7 +17,7 @@ function decrementMonth() {
 </script>
 <template>
     <Header />
-    <section class="text-2xl text-center my-6">
+    <section class="flex gap-6 items-center justify-center text-2xl text-center my-6">
         <span class="cursor-pointer text-4xl" @click="decrementMonth">&larr;</span>
         <span class="select-none">{{
             formatDateAsMonthYear(monthIdx, year)
