@@ -9,6 +9,8 @@ useHead({
 });
 </script>
 <template>
+    <NuxtLoadingIndicator />
+
     <NuxtErrorBoundary>
         <template #error="{ error, clearError }">
             <section class="flex flex-col gap-12 p-24">
